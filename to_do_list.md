@@ -28,8 +28,8 @@
 - [ ]  Final Model
 
 - [ ]  Model "Deployment": Packaging our work for production
-        - [ ]  How to accept user input & update data
-        - [ ]  Visualization - Exploratory Analysis, Prediction, Model Evaluation, etc
+    - [ ]  How to accept user input & update data
+    - [ ]  Visualization - Exploratory Analysis, Prediction, Model Evaluation, etc
 
 - [ ]  Documentation/Admin
     - [ ]  ReadMe
