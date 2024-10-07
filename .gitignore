@@ -1,3 +1,7 @@
+config.ini
+.DS_Store
+airbnbenv/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
