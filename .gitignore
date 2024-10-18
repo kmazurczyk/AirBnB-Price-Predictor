@@ -1,8 +1,4 @@
 config.ini
-*.xlsx
-*.csv
-*.geojson
-*.pdf
 .DS_Store
 airbnbenv/
 
