@@ -3,6 +3,7 @@ config.ini
 *.xlsx
 *.pdf
 *.geojson
+*.zip
 .DS_Store
 airbnbenv/
 
