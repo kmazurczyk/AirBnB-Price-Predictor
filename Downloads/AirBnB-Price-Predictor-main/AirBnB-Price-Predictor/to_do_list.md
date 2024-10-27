@@ -1,0 +1,48 @@
+# To Do List
+
+- [x]  HW1 Project Plan
+- [ ]  Data Sourcing/Cleansing and Exploratory Analysis
+    - [x]  InsideAirbnb - @Kori
+        - [ ]  review data?
+        - [ ]  more data?
+    - [ ]  NYCOpenData APIs - @Kai
+        - [x]  MTA Transit
+        - [ ]  Property Valuations
+            - [ ]  missing values and skewed valuations - Kai
+            - [ ]  geocoding - Dawnena
+    - [ ]  Google APIs - @Dawnena
+        - [ ]  Geocoding - lat/long to addresses and vice versa
+        - [ ]  Places - collecting info for landmarks we’re interested to measure
+    - [ ]  ~~Zillow - Rental data~~
+- [ ]  Feature Engineering
+    - [x]  InsideAirBNB
+        - [ ]  rating review - imputation?
+    - [ ]  Property Valuations
+    - [x]  Distance and density measures
+        - [ ]  MTA
+        - [x]  Google Places
+- [ ]  Trial a couple models -
+    - [ ]  **predictor: price**
+    - [ ]  **ID final variables:**
+        - [ ]  AirBNB
+            - [ ]  cross correlated variables? availability, beds/bedrooms?
+            - [ ]  accommodates
+            - [ ]  beds
+            - [ ]  bedrooms
+        - [ ]  property valuation
+            - [ ]  market value
+            - [ ]  square footage
+            - [ ]  type of building
+            
+    - [ ]  Regression
+    - [ ]  Ensemble trees
+    
+- [ ]  Training and Scoring
+- [ ]  Final Model
+- [ ]  Documentation/Admin
+    - [ ]  ReadMe
+    - [ ]  Requirements.txt
+    - [ ]  Secure API keys
+    - [ ]  GitIgnore
+- [ ]  Final Presentation
+    - [ ]  Report
