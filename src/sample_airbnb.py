@@ -26,9 +26,15 @@ def read_csv(file_csv='Airbnb_listings_cleaned.csv'):
         print(e)
 
 # calc weights by borough
-def weight_boroughs(df):
+def weight_boroughs(df,latest_period=True):
+
     # undo dummies in single column "boroughs"
     df['boroughs'] = df.filter(like='neighbourhood_group_cleansed_').idxmax(axis=1).str.replace('neighbourhood_group_cleansed_', '')
+
+    # calc weights/create sample either from latest period, or all the data
+    if latest_period:
+        df.sort_values(['id','last_scraped'], inplace=True)
+        df.drop_duplicates(subset=['id'],keep='last',inplace=True)
 
     # calc frequencies to be used as weights
     frequencies = df['boroughs'].value_counts().to_dict()
