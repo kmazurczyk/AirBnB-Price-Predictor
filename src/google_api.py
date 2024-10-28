@@ -28,7 +28,9 @@ def get_lat_long(address):
 
 # Function to get address from latitude and longitude using Geocoding API
 def get_address(lat, lng):
-    url = f'https://maps.googleapis.com/maps/api/geocode/json?latlng={lat},{lng}&key={api_key}'
+    result_type="street_address"
+    location_type='ROOFTOP'
+    url = f'https://maps.googleapis.com/maps/api/geocode/json?latlng={lat},{lng}&location_type={location_type}&result_type={result_type}&key={api_key}'
     response = requests.get(url)
     if response.status_code == 200:
         data = response.json()
@@ -69,57 +71,46 @@ def get_landmarks_nearby(lat, lng, radius=500):
 #     print(f"Nearby Landmarks: {landmarks}")
 
 # Airbnb Integration
-def get_airbnb_listings(file_csv='airbnb_sample.csv',lat_long_only=False):
+def get_airbnb_listings(file_csv='airbnb_sample.csv',lat_long_only=False,batch=None):
 
     try:
         file_path = data_dir + 'raw/' + file_csv
         df = pd.read_csv(file_path, index_col=0)
-        df = df.sort_index()
+        df.sort_index(inplace=True)
 
+        if batch is not None:
+            start, stop = batch
+            df = df.iloc[start:stop]
+        
         if lat_long_only == True:
             df = df.loc[:,['latitude','longitude']]
-            return df
-        else:
-            return df
+        
+        return df
 
     except FileNotFoundError as f:
         print(f"Could not find {file_csv}. Expected path: {file_path}")
 
-# Function to subset df as needed, to save Google API costs
-def batch_listings(df,start,stop):
-
-    batch_df = pd.DataFrame()
-    start_index = 0
-    end_index = 1000
-    batch = 1000
-    
-    while end_index < size + 1:
-        slice_df = df.iloc[start_index:end_index]
-        batch_df = pd.concat([batch_df, slice_df], ignore_index=False)
-        start_index = end_index
-        end_index += batch    
-    
-    return batch_df
-
 # Example integration between Airbnb API and Google APIs
 if __name__ == "__main__":
     # Step 1: Fetch Airbnb property listings
-    airbnb_listings = get_airbnb_listings(lat_long_only = True)
-
-    # Optionally, batch to save cost
-    airbnb_listings = batch_listings(airbnb_listings)
-
-    # for property in airbnb_listings:
-    #     address = property['address']  # Get address from the listing
+    airbnb_listings = get_airbnb_listings(lat_long_only = False, batch=(3,10))
+    
+    # Step 2: Get address info based on AirBNB lat, lng
+    airbnb_listings['geocoding_api_response'] = airbnb_listings.apply(lambda row: get_address(row['latitude'], row['longitude']), axis=1)
+    
+    # Step 2: Get latitude and longitude for the property address
+    for index, address in airbnb_listings.iterrows():
+        lat, lng = get_lat_long(address)
+    
+    if lat is not None and lng is not None:
+        print(f"Latitude: {lat}, Longitude: {lng}")
         
-    #     # Step 2: Get latitude and longitude for the property address
-    #     lat, lng = get_lat_long(address)
-        
-    #     if lat is not None and lng is not None:
-    #         print(f"Latitude: {lat}, Longitude: {lng}")
-            
-    #         # Step 3: Get landmarks near the property
-    #         landmarks = get_landmarks_nearby(lat, lng)
-    #         print(f"Nearby Landmarks for {address}: {landmarks}")
-    #     else:
-    #         print(f"Failed to get lat/lng for the address: {address}")
+    # Step 3: Get landmarks near the property
+        landmarks = get_landmarks_nearby(lat, lng)
+        print(f"Nearby Landmarks for {address}: {landmarks}")
+
+    else:
+        print(f"Failed to get lat/lng for the address: {address}")
+
+    # Step 4: Send to CSV for cleaning
+    airbnb_listings.to_csv(data_dir + 'raw/' + 'test_google_response.csv')
