@@ -3,8 +3,8 @@ from sklearn.model_selection import train_test_split
 from src.feature_engineering import prepare_features, tokenize_and_clean_description, extract_description_features
 from src.models import train_decision_tree, train_random_forest, train_glm
 from src.visualizations import plot_results
-from data.google_api import geocode_address, find_nearby_places
-from nyc_data import load_nyc_data
+from src.google_api import geocode_address, find_nearby_places
+from data.nyc_data import load_nyc_data
 from dotenv import load_dotenv
 import os
 
