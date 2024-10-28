@@ -35,7 +35,11 @@ def main():
     # Perform feature engineering
     print("Starting feature engineering...")
     airbnb_data = tokenize_and_clean_description(airbnb_data)
+    print("Tokenization and cleaning completed.")
+    
     airbnb_data = extract_description_features(airbnb_data)
+    print("Feature extraction completed.")
+    
     enriched_data = prepare_features(airbnb_data, property_data, mta_data, nyc_zip_codes, nyc_boroughs)
     print("Feature engineering completed.")
 
