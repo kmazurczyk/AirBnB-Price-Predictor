@@ -2,7 +2,7 @@
 import folium
 import pandas as pd
 import matplotlib.pyplot as plt
-from data.google_api import find_nearby_places  # Ensure this is correctly implemented and imports correctly
+from src.google_api import find_nearby_places  # Ensure this is correctly implemented and imports correctly
 
 # Load Airbnb data with lat/long and price information
 airbnb_data = pd.read_csv('data/airbnb_listings_cleaned.csv')  # Ensure this file is in the correct location
