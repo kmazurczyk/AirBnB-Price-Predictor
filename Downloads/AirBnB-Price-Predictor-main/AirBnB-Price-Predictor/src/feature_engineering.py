@@ -1,3 +1,4 @@
+# feature_engineering.py
 import pandas as pd
 from geopy.distance import geodesic
 import nltk
@@ -27,4 +28,26 @@ def tokenize_and_clean_description(data):
     data['cleaned_description'] = data['tokenized_description'].apply(
         lambda tokens: [word.lower() for word in tokens if word.lower() not in stop_words]
     )
+    return data
+
+def extract_description_features(data):
+    """Extract specific features from property descriptions based on keywords."""
+    feature_keywords = {
+        'luxury': ['luxury', 'high-end', 'premium'],
+        'proximity_to_transit': ['subway', 'train', 'transit'],
+        'view': ['city view', 'ocean view', 'park view']
+    }
+
+    def extract_features(tokens, feature_keywords):
+        features = {}
+        for feature, keywords in feature_keywords.items():
+            features[feature] = any(token.lower() in keywords for token in tokens)
+        return features
+
+    # Apply extraction to each tokenized description and add as new columns
+    feature_df = data['cleaned_description'].apply(
+        lambda tokens: extract_features(tokens, feature_keywords)
+    ).apply(pd.Series)
+    
+    data = pd.concat([data, feature_df], axis=1)
     return data
