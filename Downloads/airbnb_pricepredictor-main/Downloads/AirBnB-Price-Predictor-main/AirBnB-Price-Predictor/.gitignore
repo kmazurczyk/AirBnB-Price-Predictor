@@ -8,6 +8,7 @@ config.ini
 *.pdf
 *.geojson
 *.zip
+*.html
 .DS_Store
 
 # Virtual environments
