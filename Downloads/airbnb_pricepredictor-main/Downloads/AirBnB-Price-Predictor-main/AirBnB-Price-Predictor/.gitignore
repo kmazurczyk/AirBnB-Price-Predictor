@@ -1,6 +1,6 @@
 # Configuration files
 config.ini
-.env  # Add .env to ignore API keys and other secrets
+*.env
 
 # Data files
 *.csv
