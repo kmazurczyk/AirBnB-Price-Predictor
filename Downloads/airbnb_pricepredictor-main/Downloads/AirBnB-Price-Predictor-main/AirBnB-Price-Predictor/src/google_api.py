@@ -15,7 +15,22 @@ def geocode_address(row):
             row['lng'] = data['results'][0]['geometry']['location']['lng']
     return row
 
-def geocode_lat_long(address):
+# Function to get address from latitude and longitude using Geocoding API
+def get_address(lat, lng, api_key, result_type='street_address'):
+    location_type='ROOFTOP'
+    url = f'https://maps.googleapis.com/maps/api/geocode/json?latlng={lat},{lng}&location_type={location_type}&result_type={result_type}&key={api_key}'
+    response = requests.get(url)
+    if response.status_code == 200:
+        data = response.json()
+        if 'results' in data and len(data['results']) > 0:
+            addresses = data['results'][0]
+            return addresses
+        else:
+            return None
+    else:
+        raise Exception(f"Error: {response.status_code, response.headers, response.text}")
+
+def geocode_lat_long(address, api_key):
     url = f'https://maps.googleapis.com/maps/api/geocode/json?address={address}&key={api_key}'
     response = requests.get(url)
     if response.status_code == 200:
