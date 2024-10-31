@@ -15,6 +15,19 @@ def geocode_address(row):
             row['lng'] = data['results'][0]['geometry']['location']['lng']
     return row
 
+def geocode_lat_long(address):
+    url = f'https://maps.googleapis.com/maps/api/geocode/json?address={address}&key={api_key}'
+    response = requests.get(url)
+    if response.status_code == 200:
+        data = response.json()
+        if 'results' in data and len(data['results']) > 0:
+            location = data['results'][0]['geometry']['location']
+            return location['lat'], location['lng']
+        else:
+            return None
+    else:
+        raise Exception(f"Error: {response.status_code}")
+
 def find_nearby_places(lat, lng, radius=500, place_type='landmark', retries=3):
     """Get nearby landmarks within a given radius, with retry mechanism for connection stability."""
     url = f"https://maps.googleapis.com/maps/api/place/nearbysearch/json?location={lat},{lng}&radius={radius}&type={place_type}&key={API_KEY}"
