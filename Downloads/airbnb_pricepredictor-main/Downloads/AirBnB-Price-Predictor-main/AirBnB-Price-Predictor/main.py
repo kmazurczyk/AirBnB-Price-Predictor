@@ -1,8 +1,8 @@
 import pandas as pd
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split, cross_validate
 from src.feature_engineering import prepare_features, tokenize_and_clean_description, extract_description_features
 from src.models import train_decision_tree, train_random_forest, train_glm
-from src.visualizations import plot_results
+from src.visualizations import plot_model_performance, plot_airbnb_map
 from src.google_api import geocode_address, find_nearby_places
 from data.nyc_data import load_nyc_data
 from dotenv import load_dotenv
@@ -49,31 +49,38 @@ def main():
         print(f"Error during feature engineering: {e}")
         return
 
-    # Step 4: Split the enriched dataset into training and test sets
+    # Step 4: Split the enriched dataset into features and target
     print("Splitting data into training and testing sets...")
     try:
         X = enriched_data.drop("price", axis=1)
         y = enriched_data["price"]
-        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
         print("Data split successfully.")
     except Exception as e:
         print(f"Error during data splitting: {e}")
         return
 
-    # Step 5: Train models and collect results
-    print("Training models...")
+    # Step 5: Train models using cross-validation and collect results
+    print("Training models with cross-validation...")
     try:
-        print("Training Decision Tree...")
-        dt_results, dt_model = train_decision_tree(X_train, X_test, y_train, y_test)
-        print("Decision Tree model trained.")
+        results_dict = {}
 
-        print("Training Random Forest...")
-        rf_results, rf_model = train_random_forest(X_train, X_test, y_train, y_test)
-        print("Random Forest model trained.")
+        print("Training Decision Tree with cross-validation...")
+        dt_results = cross_validate(train_decision_tree, X, y, cv=5, scoring=('r2', 'neg_root_mean_squared_error'), return_train_score=False)
+        dt_results = {'rmse': -dt_results['test_neg_root_mean_squared_error'].mean(), 'r2': dt_results['test_r2'].mean()}
+        results_dict['Decision Tree'] = dt_results
+        print("Decision Tree cross-validation completed.")
 
-        print("Training GLM...")
-        glm_results, glm_model = train_glm(X_train, X_test, y_train, y_test)
-        print("GLM model trained.")
+        print("Training Random Forest with cross-validation...")
+        rf_results = cross_validate(train_random_forest, X, y, cv=5, scoring=('r2', 'neg_root_mean_squared_error'), return_train_score=False)
+        rf_results = {'rmse': -rf_results['test_neg_root_mean_squared_error'].mean(), 'r2': rf_results['test_r2'].mean()}
+        results_dict['Random Forest'] = rf_results
+        print("Random Forest cross-validation completed.")
+
+        print("Training GLM with cross-validation...")
+        glm_results = cross_validate(train_glm, X, y, cv=5, scoring=('r2', 'neg_root_mean_squared_error'), return_train_score=False)
+        glm_results = {'rmse': -glm_results['test_neg_root_mean_squared_error'].mean(), 'r2': glm_results['test_r2'].mean()}
+        results_dict['GLM'] = glm_results
+        print("GLM cross-validation completed.")
     except Exception as e:
         print(f"Error during model training: {e}")
         return
@@ -81,19 +88,24 @@ def main():
     # Step 6: Display model results
     print("Displaying model results...")
     try:
-        print("\n--- Decision Tree Results ---")
-        print(f"RMSE: {dt_results['rmse']:.2f}, R^2: {dt_results['r2']:.2f}")
-        print("\n--- Random Forest Results ---")
-        print(f"RMSE: {rf_results['rmse']:.2f}, R^2: {rf_results['r2']:.2f}")
-        print("\n--- Generalized Linear Model (GLM) Results ---")
-        print(f"RMSE: {glm_results['rmse']:.2f}, R^2: {glm_results['r2']:.2f}")
+        for model_name, metrics in results_dict.items():
+            print(f"\n--- {model_name} Results ---")
+            print(f"RMSE: {metrics['rmse']:.2f}, R^2: {metrics['r2']:.2f}")
     except Exception as e:
         print(f"Error during results display: {e}")
         return
 
-    # Step 7: Save predictions and enriched data
+    # Step 7: Visualize model performance metrics
+    plot_model_performance(results_dict)
+
+    # Step 8: Visualize Airbnb listings with landmarks on map
+    plot_airbnb_map(enriched_data)
+
+    # Step 9: Save predictions and enriched data
     print("Saving predictions and enriched data...")
     try:
+        # Use Random Forest model to make predictions
+        rf_model = train_random_forest(X, y)  # Train on entire dataset for final prediction
         enriched_data['predicted_price'] = rf_model.predict(X)
         enriched_data.to_csv("data/airbnb_price_predictions.csv", index=False)
         print("Predictions saved to 'data/airbnb_price_predictions.csv'.")
@@ -103,3 +115,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+
