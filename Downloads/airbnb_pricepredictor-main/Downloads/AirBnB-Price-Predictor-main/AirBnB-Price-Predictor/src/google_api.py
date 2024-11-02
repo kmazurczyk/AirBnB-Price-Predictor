@@ -17,6 +17,7 @@ def geocode_address(row):
 
 # Function to get address from latitude and longitude using Geocoding API
 def get_address(lat, lng, api_key, result_type='street_address'):
+    time.sleep(0.025) # api allows 3000 requests / sec
     location_type='ROOFTOP'
     url = f'https://maps.googleapis.com/maps/api/geocode/json?latlng={lat},{lng}&location_type={location_type}&result_type={result_type}&key={api_key}'
     response = requests.get(url)
