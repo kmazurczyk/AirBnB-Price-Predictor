@@ -5,11 +5,12 @@
 ## Dependencies
 
 * Key packages may be installed from requirements.txt
-* Valid API keys for Google Cloud and OpenData NYC are required for data extraction. Alternatively, refer to the data repo under Data Sources.
+* Valid API keys for Google Cloud and OpenData NYC are required for data extraction. 
+* Alternatively, refer to the data repo under Data Sources.
 
 ## Data Sources & Initial EDA
 
-Data supporting EDA and modeling may be found here.
+CSVs supporting EDA and modeling may be found here.
 https://drive.google.com/drive/folders/1uFq5dFdvqfkvqRevrNPtnhqbxjgidESB?usp=sharing
 
 ## Data Cleaning & Pre Processing
