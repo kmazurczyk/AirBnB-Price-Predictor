@@ -2,10 +2,10 @@
 
 ## Project Overview
 
-## Dependencies
+## Stack / Dependencies
 
-* Key packages may be installed from requirements.txt
-* Valid API keys for Google Cloud and OpenData NYC are required for data extraction. 
+* Key python packages may be installed from requirements.txt
+* A .env file with valid API keys for Google Cloud and OpenData NYC is required for data extraction. 
 * Alternatively, refer to the data repo under Data Sources.
 
 ## Data Sources & Initial EDA
