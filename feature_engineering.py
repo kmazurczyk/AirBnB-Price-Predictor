@@ -14,7 +14,7 @@ nltk.download('stopwords')
 # Load and process MTA data
 def load_and_process_mta_data(mta_path):
     mta_data = pd.read_csv(mta_path)
-    mta_data['station_name'] = mta_data['station_name'].str.strip().str.lower()  # Clean station names
+    mta_data['stop_name'] = mta_data['stop_name'].str.strip().str.lower()  # Clean station names
     return mta_data
 
 # Load and process Property Valuation data
