@@ -15,6 +15,7 @@ executing==2.1.0
 folium==0.17.0
 fonttools==4.54.1
 geographiclib==2.0
+geojson==3.1.0
 geopandas==1.0.1
 geopy==2.4.1
 idna==3.1
